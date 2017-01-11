@@ -20,7 +20,7 @@ class SDKPSETest extends PHPUnit_Framework_TestCase
     {
     	print("Obtener la lista de los bancos\n");
 
-    	$obj = new SDKPSE;
+    	$obj = new SDKPSE($this->getConfig());
         $banks = $obj->getBankList();
         $this->assertTrue(is_array($banks));
     }
@@ -32,7 +32,7 @@ class SDKPSETest extends PHPUnit_Framework_TestCase
     {
         print("Crear una transacton\n");
 
-        $obj = new SDKPSE;
+        $obj = new SDKPSE($this->getConfig());
 
         # Obtener el codigo del banco [bankCode]
         $bankCode = '';
@@ -61,7 +61,7 @@ class SDKPSETest extends PHPUnit_Framework_TestCase
         $transaction->ipAddress = '10.10.1.12';
         $transaction->userAgent = 
             'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:50.0)Gecko/20100101 Firefox/50.0';
-        $transaction->additionalData = [];
+        $transaction->additionalData = array();
 
         $result = $obj->createTransaction($transaction);
         $this->assertTrue(gettype($result) == 'object');
@@ -81,7 +81,7 @@ class SDKPSETest extends PHPUnit_Framework_TestCase
     {
         print("Crear una transacton multicredito\n");
 
-        $obj = new SDKPSE;
+        $obj = new SDKPSE($this->getConfig());
 
         # Obtener el codigo del banco [bankCode]
         $bankCode = '';
@@ -137,7 +137,7 @@ class SDKPSETest extends PHPUnit_Framework_TestCase
     {
         print("Obtener la informacion de una transacton\n");
 
-        $obj = new SDKPSE;
+        $obj = new SDKPSE($this->getConfig());
 
         # Crear una transaccion
 
@@ -168,7 +168,7 @@ class SDKPSETest extends PHPUnit_Framework_TestCase
         $transaction->ipAddress = '10.10.1.12';
         $transaction->userAgent = 
             'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:50.0)Gecko/20100101 Firefox/50.0';
-        $transaction->additionalData = [];
+        $transaction->additionalData = array();
 
         $result = $obj->createTransaction($transaction);
         $this->assertTrue(gettype($result) == 'object');
@@ -220,5 +220,20 @@ class SDKPSETest extends PHPUnit_Framework_TestCase
         $person->mobile = '3142901254';
 
         return $person;
+    }
+
+    private function getConfig() 
+    {
+        return array(
+            "login" => '6dd490faf9cb87a9862245da41170ff2',
+            "tran_key" => '024h1IlD',
+            "cache" => array(
+                "type" => "memcached",
+                "memcached" => array(
+                    "host" => "127.0.0.1",
+                    "port" => "11211"
+                )
+            )
+        );
     }
 }

@@ -19,7 +19,7 @@ class CMemcachedTest extends PHPUnit_Framework_TestCase
         $key = 'test_add';
         $value = 'test valor a testear';
 
-        $obj = new CMemcached();
+        $obj = new CMemcached($this->getConfig());
         $result = $obj->add($key, $value, 10);
         $this->assertTrue($result);
 
@@ -35,7 +35,7 @@ class CMemcachedTest extends PHPUnit_Framework_TestCase
 
         $key = 'test_add';
 
-        $obj = new CMemcached();
+        $obj = new CMemcached($this->getConfig());
         $value = $obj->get($key);
         $this->assertTrue($value !== false);
 
@@ -51,7 +51,7 @@ class CMemcachedTest extends PHPUnit_Framework_TestCase
 
         $key = 'test_add';
 
-        $obj = new CMemcached();
+        $obj = new CMemcached($this->getConfig());
         $value = $obj->delete($key);
         $this->assertTrue($value);
 
@@ -69,7 +69,7 @@ class CMemcachedTest extends PHPUnit_Framework_TestCase
         $value = 'test valor a testear expired';
         $expired = 1; // Dos segundos
 
-        $obj = new CMemcached();
+        $obj = new CMemcached($this->getConfig());
         $result = $obj->add($key, $value, $expired);
         sleep($expired+1);
 
@@ -88,7 +88,7 @@ class CMemcachedTest extends PHPUnit_Framework_TestCase
         $key = 'test_general';
         $value = 'test Prueba general de Memcached';
         $expired = 2; // Dos segundos
-        $obj = new CMemcached();
+        $obj = new CMemcached($this->getConfig());
 
         # Adicionar el valor a la cache
         $result = $obj->add($key, $value, $expired);
@@ -102,5 +102,13 @@ class CMemcachedTest extends PHPUnit_Framework_TestCase
         $obj->delete($key);
         $valueCache = $obj->get($key);
         $this->assertNotEquals($value, $valueCache);
+    }
+
+    private function getConfig() 
+    {
+        return array(
+            "host" => "127.0.0.1",
+            "port" => "11211"
+        );
     }
 }

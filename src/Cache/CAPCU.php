@@ -1,48 +1,15 @@
 <?php
 namespace PlaceToPay\SDKPSE\Cache;
 
-use \Memcached;
-use PlaceToPay\SDKPSE\Helpers\Error;
-
 /**
  * Clase que provee metodos para manipular los datos de la cache
  *
- * El servidor de cache que se utiliza es Memcached
- * 
- * Genera una excepcion en caso de no poder adicionar el servidor
+ * Trabaja con APCU o cache alternativo de PHP
  * 
  * @author 	Oscar Uriel Rodriguez Tovar <okarook@gmail.com>
  */
-class CMemcached implements CInterface
+class CAPCU implements CInterface
 {
-	/**
-	 * $memcached Contiene la instancia de \Memcached
-	 * @var \Memcached 
-	 */
-	private $memcached;
-
-    /**
-     * __construct 
-     * @param array $config configuracion del servidor, los indices deben ser:
-     *                      [
-	 *                     	   "host" => "Host del servidor",
-	 *                     	   "port" => "puerto del servidor"
-     *                      ]
-     */
-    public function __construct($config)
-    {
-        $this->memcached  = new Memcached();
-		$result = $this->memcached->addServer(
-			$config['host'],
-			$config['port']
-		);
-
-		if ($result === false) {
-			Error::newException(
-				'Error al adicionar el servidor de \\Memcached'
-			);
-		}
-    }
 
     /**
 	 * add Adicionar un item a una nueva clave
@@ -55,7 +22,7 @@ class CMemcached implements CInterface
 	 */
 	public function add($key, $value, $expiration)
 	{
-		return $this->memcached->add($key, $value, $expiration);
+		return apcu_store($key, $value, $expiration);
 	}
 
 	/**
@@ -67,7 +34,7 @@ class CMemcached implements CInterface
 	 */
 	public function get($key)
 	{
-		return $this->memcached->get($key);
+		return apcu_fetch($key);
 	}
 
 	/**
@@ -79,6 +46,6 @@ class CMemcached implements CInterface
 	 */
 	public function delete($key)
 	{
-		return $this->memcached->delete($key);
+		return apcu_delete($key);
 	}
 }

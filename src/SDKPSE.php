@@ -2,7 +2,6 @@
 namespace PlaceToPay\SDKPSE;
 
 use \SoapClient;
-use PlaceToPay\SDKPSE\Configs\Config;
 use PlaceToPay\SDKPSE\Helpers\Helper;
 use PlaceToPay\SDKPSE\Cache\Cache;
 use PlaceToPay\SDKPSE\Structures\Authentication;
@@ -10,8 +9,18 @@ use PlaceToPay\SDKPSE\Structures\Authentication;
 /**
  * Clase que provee metodos para comunicarcen al webservice
  *
- * La autenticacion de webservice se encuentra configurado en los atributos
- * "login", "tran_key" del archivo de configuracion /config.json
+ * La autenticacion del webservice se debe enviar por parametro al instanciar
+ * la clase, array con los indices ["login" => "", "tran_key" => ""] tambien
+ * debe contener las siguientes configuraciones: 
+ *     [
+ * 			"cache" => [
+ * 				"type" => "",
+ * 			 	"memcached" => [
+ * 				 	"host" => "",
+ * 				  	"port" => ""
+ * 			    ] 		
+ *    	   ]
+ *     ]
  * 
  * @author 	Oscar Uriel Rodriguez Tovar <okarook@gmail.com>
  */
@@ -36,23 +45,34 @@ class SDKPSE
 	private $soapClient;
 
 	/**
-	 * $login Contiene el login asignado por Place To Pay
-	 * @var string
+	 * $config Contiene las configuraciones para la libreria,
+	 * 			"login" => "login asignado por Place To Pay",
+	 * 			"tran_key" => "llave de transaccion asignado por Place To Pay",
+	 * 			"cache" => "Sistema de cache a utilizar y su configuracion"
+	 * @var array
 	 */
-	private $login;
+	private $config;
 
 	/**
-	 * $tranKey Contiene la llave de transaccion asignado por Place To Pay
-	 * @var string
+	 * __construct 
+	 * @param array $config Contiene las configuracion, los indices deben ser:
+	 *                      [
+	 *                      	"login" => "",
+	 *                      	"tran_key" => "",
+	 * 		                   	"cache" => [
+	 *								"type" => "",
+	 * 								"memcached" => [
+	 * 				    				"host" => "",
+	 * 				        			"port" => ""
+	 * 			            		] 		
+	 *    	             		]
+	 *    	             	]
 	 */
-	private $tranKey;
-
-	function __construct()
+	function __construct($config)
 	{
+		$this->config = $config;
 		$this->soapClient = 
 			new SoapClient(self::$WSDL, array('encoding' => self::$ENCODING));
-		$this->login = Config::get('login');
-		$this->tranKey = Config::get('tran_key');
 	}
 
 	/**
@@ -69,7 +89,7 @@ class SDKPSE
 		# key asignado para cachear los bancos
 		$keyCache = 'bank_list';
 		# Obtener la lista de bancos que estan en la cache
-		$cache = new Cache();
+		$cache = new Cache($this->config['cache']);
 		$banks = $cache->get($keyCache);
 
 		if ($banks === false) {
@@ -182,10 +202,10 @@ class SDKPSE
 	private function auth()
 	{
 		$seed = Helper::seed();
-		$tranKey = Helper::tranKey($seed, $this->tranKey);
+		$tranKey = Helper::tranKey($seed, $this->config['tran_key']);
 		
 		$authentication = new Authentication;
-		$authentication->login = $this->login;
+		$authentication->login = $this->config['login'];
 		$authentication->tranKey = $tranKey;
 		$authentication->seed = $seed;
 		$authentication->additional = array();

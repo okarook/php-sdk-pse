@@ -1,17 +1,16 @@
 <?php
 namespace PlaceToPay\SDKPSE\Cache;
 
-use PlaceToPay\SDKPSE\Configs\Config;
 use PlaceToPay\SDKPSE\Helpers\Error;
 
 /**
  * Clase que provee metodos para manipular los datos de la cache
  *
  * El servidor de cache que se utiliza se encuentra configurado
- * en el atributo "cache" del archivo de configuracion /config.json
+ * en el atributo "type" del array solicitado en el constructur de la calse
  * 
- * Genera una excepcion cuando no se encuentra configurado el tipo de cache
- * en el archivo /config.json
+ * Genera una excepcion cuando no se envia por parametro al intancias
+ * la clase el tipo de cache a utilizar
  * 
  * @author 	Oscar Uriel Rodriguez Tovar <okarook@gmail.com>
  */
@@ -23,18 +22,33 @@ class Cache implements CInterface
 	 */
 	private $objServer;
     
-    public function __construct()
+    /**
+     * __construct 
+     * @param array $cache 	configuracion de la cache, los indices deben ser:
+     *                      [
+     *                     		"type" => 
+     *                     			"Sistema de cache a utilizar, puede ser:
+     *                     			memcached o apcu",
+     *                     	 	"memcached" => [
+     *                     	 		"host" => "Host del servidor",
+     *                     	 		"port" => "puerto del servidor"
+     *                     	 	]
+     *                      ]
+     */
+    public function __construct($cache)
     {	
-    	$cache = strtoupper(Config::get('cache'));
-        switch ($cache) {
+    	$type = strtoupper($cache['type']);
+        switch ($type) {
         	case 'MEMCACHED':
-        		$this->objServer = new CMemcached;
+        		$this->objServer = new CMemcached($cache['memcached']);
+        		break;
+        	case 'APCU':
+        		$this->objServer = new CAPCU;
         		break;
         	default:
         		Error::newException('Error debe configurar el tipo cache');
         		break;
         }
-		$this->objServer = new CMemcached();
     }
 
      /**

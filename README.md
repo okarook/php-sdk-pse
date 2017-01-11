@@ -4,9 +4,12 @@ Una simple libreria para conectarse al webservice PSE suministrado por Place To 
 
 ## Requerimientos
 
-Es necesario el servidor `Memcached` almacenar los datos en caché. [Sitio oficial](http://php.net/manual/es/book.memcached.php)
+Puedes elegir [`Memcached`](http://php.net/manual/es/book.memcached.php) o [`APCu`](http://php.net/manual/es/book.apcu.php) para almacenar los datos en caché.
+
+Si elige [`APCu`](http://php.net/manual/es/book.apcu.php) Tenga en cuenta que hay varios casos en los que la caché APCu no persiste y todos los valores establecidos se pierden después de que existe el proceso PHP. P.ej. CLI de PHP: las sucesivas ejecuciones de CLI de la misma secuencia de comandos encontrarán la caché APCu vacía.
 
 En proximas versiones se adicionan mas sistemas de caché
+
 ```
 - PHP >= 5.6.0
 - Memcached >= 1.4.25
@@ -21,14 +24,32 @@ composer require place-to-pay/php-sdk-pse
 ```
 ## Configuración
 
-Configurar el archivo [config.json](config.json) en el directorio `vendor/place-to-pay/php-sdk-pse`
+Al instanciar el objeto `PlaceToPay\SDKPSE\SDKPSE` debe pasar por parametro
+un array con la siguiente configuración:
+
+```php
+	$config = array(
+		"login" => "",
+		"tran_key" => "",
+		"cache" => array(
+	 		"type" => "",
+	 		"memcached" => array(
+	 			"host" => "",
+	 			"port" => ""
+			)
+		)
+	)
+
+	$obj = new SDKPSE($config);
+```
+
 
 ### 1. Datos suministrados por Place To Pay
 1. `login:` Login para la autenticación
 2. `tran_key:` Llave transaccional
 
-### 1. Datos generales
-1. `cache:` Sistema de caché disponible
+### 1. Datos sistema de caché
+1. `type:` Nombre del sistema de caché a utilizar, puede ser `memcached` o `apcu` 
 
 De acuerdo al sistema de caché indicado debe realizar su respectiva configuración
 
