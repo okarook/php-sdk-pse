@@ -1,0 +1,23 @@
+{
+    "name": "place-to-pay/php-sdk-pse",
+    "description": "Una simple libreria para conectarse al webservice SOAP suministrado por Place To Pay",
+    "homepage": "https://github.com/okarook/php-sdk-pse",
+    "authors": [
+        {
+            "name": "Oscar Uriel Rodriguez Tovar",
+            "email": "okarook@gmail.com"
+        }
+    ],
+    "license": "MIT",
+    "require": {
+        "php": ">=5.6.0"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "4.0.*"
+    },
+    "autoload": {
+        "psr-4": {
+            "PlaceToPay\\SDKPSE\\": "src"
+        }
+    }
+}

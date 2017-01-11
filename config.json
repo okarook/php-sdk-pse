@@ -1,0 +1,12 @@
+{
+	"login": "6dd490faf9cb87a9862245da41170ff2",
+
+	"tran_key": "024h1IlD",
+
+	"cache": "memcached",
+
+    "memcached": {
+        "host": "127.0.0.1",
+        "port": "11211"
+    }
+}
