@@ -65,6 +65,20 @@ v1.0.0
 
 # Documentación
 
+## Excepciones 
+
+Los metodos pueden generar excepciones de tipo `\Exception`
+
+#### Ejemplos:
+
+> Cuando no se envian los parametros de configuracion
+
+> Cuando no se puede agregar el servidor memcached
+
+> Cuando el tipo o longitud del atributo del [objeto](#tipos-de-datos-o-estructuras) es incorrecto
+
+> Cuando no se puede consumir el webservice PSE
+
 ## Métodos disponibles
 	
 A continuación se describen las operaciones (métodos) que la libreria brinda

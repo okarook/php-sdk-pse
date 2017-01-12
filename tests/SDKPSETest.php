@@ -45,7 +45,7 @@ class SDKPSETest extends PHPUnit_Framework_TestCase
         
         $transaction = new PSETransactionRequest();
         $transaction->bankCode = $bankCode;
-        $transaction->bankInterface = 1;
+        $transaction->bankInterface = 0;
         $transaction->returnURL = 'http://okarook.com';
         $transaction->reference = '2017-011212';
         $transaction->description = 'Se realiza la compra de un pc';
@@ -93,8 +93,8 @@ class SDKPSETest extends PHPUnit_Framework_TestCase
         $shipping = $this->getPersonTwo();
         
         $credits = new CreditConcept;
-        $credits->entityCode = 'ent_cod_2017_01';
-        $credits->serviceCode = 'ser_cod_2017_01';
+        $credits->entityCode = 'ent_cod_2017';
+        $credits->serviceCode = 'ser_cod_2017';
         $credits->amountValue = 2000000;
         $credits->taxValue = 500000;
         $credits->description = 'Credito para pagar el TV';
@@ -126,8 +126,6 @@ class SDKPSETest extends PHPUnit_Framework_TestCase
         print('returnCode: ' . $result->returnCode . "\n");
         print('bankURL: ' . $result->bankURL . "\n");
         print('responseReasonText: ' . $result->responseReasonText . "\n\n");
-        // var_dump(gettype($result));
-        // var_dump($result);
     }
 
     /**

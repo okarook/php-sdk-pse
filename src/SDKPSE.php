@@ -3,6 +3,7 @@ namespace PlaceToPay\SDKPSE;
 
 use \SoapClient;
 use PlaceToPay\SDKPSE\Helpers\Helper;
+use PlaceToPay\SDKPSE\Helpers\Validate;
 use PlaceToPay\SDKPSE\Cache\Cache;
 use PlaceToPay\SDKPSE\Structures\Authentication;
 
@@ -119,6 +120,12 @@ class SDKPSE
 	 */
 	public function createTransaction($transaction)
 	{
+        # Validar los parametros
+        Validate::make($transaction, Filter::PSETransactionRequest());
+        Validate::make($transaction->payer, Filter::Person());
+        Validate::make($transaction->buyer, Filter::Person());
+        Validate::make($transaction->shipping, Filter::Person());
+
 		$param = $this->auth();
 		$param['transaction'] = $transaction;
 
@@ -146,6 +153,13 @@ class SDKPSE
 	 */
 	public function createTransactionMultiCredit($transaction)
 	{
+        # Validar los parametros
+        Validate::make($transaction, Filter::PSETransactionRequest());
+        Validate::make($transaction->payer, Filter::Person());
+        Validate::make($transaction->buyer, Filter::Person());
+        Validate::make($transaction->shipping, Filter::Person());
+        Validate::make($transaction->credits, Filter::CreditConcept());
+
 		$param = $this->auth();
 		$param['transaction'] = $transaction;
 
@@ -173,6 +187,9 @@ class SDKPSE
 	 */
 	public function getTransactionInformation($transactionID)
 	{
+		if (intval($transactionID) == 0)
+			Error::newException('Invalido el $transactionID ');
+
 		$param = $this->auth();
 		$param['transactionID'] = $transactionID;
 		$informacion = '';
